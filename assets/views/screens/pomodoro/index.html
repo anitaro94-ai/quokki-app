@@ -1,0 +1,25 @@
+  <div class="screen" id="screen-pomodoro">
+    <div class="pom-wrap">
+      <div class="pom-title">🍅 Enfoque</div>
+      <div class="pom-sub">Quokki se concentra con vos</div>
+      <div class="pom-qwrap">
+        <!-- Video 2 para Pomodoro (idle y focus) -->
+        <video id="pom-vid" class="pom-vid" autoplay loop muted playsinline src="vid/pomodoro.mp4"></video>
+        <!-- Imagen estatica para rest/done -->
+        <img class="pom-qi" id="pom-qi" src="" alt="Quokki" style="display:none;">
+        <div class="pom-qlbl" id="pom-qlbl">Listo</div>
+        <div class="pom-qmsg" id="pom-qmsg">Cuando quieras arrancar, Quokki se concentra.</div>
+      </div>
+      <div class="pom-ring-wrap">
+        <div style="position:relative;width:190px;height:190px;">
+          <svg class="pom-svg-ring" viewBox="0 0 190 190"><circle class="pom-ring-bg" cx="95" cy="95" r="85"/><circle class="pom-ring-p" id="pom-ring" cx="95" cy="95" r="85" stroke-dashoffset="0"/></svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;"><div class="pom-time" id="pom-time">25:00</div><div class="pom-phase" id="pom-phase">Listo</div></div>
+        </div>
+        <div class="pom-rounds" id="pom-rounds">Ronda 1 de 4</div>
+      </div>
+      <div class="pom-btns"><button class="pom-btn start" id="pom-sb" onclick="pomStart()">▶ Arrancar</button><button class="pom-btn stop" id="pom-pb" onclick="pomPause()" style="display:none">⏸ Pausar</button><button class="pom-btn reset" onclick="pomReset()">↺ Reset</button></div>
+    </div>
+    <div style="padding:0 16px;margin-bottom:12px;"><div class="pom-presets-title">Modalidad</div><div class="pom-preset-row"><div class="pom-preset active" id="preset-0" onclick="pomApplyPreset(0)"><div class="pom-preset-name">Clasico</div><div class="pom-preset-detail">25·5·x4</div></div><div class="pom-preset" id="preset-1" onclick="pomApplyPreset(1)"><div class="pom-preset-name">Intenso</div><div class="pom-preset-detail">50·10·x3</div></div><div class="pom-preset" id="preset-2" onclick="pomApplyPreset(2)"><div class="pom-preset-name">Suave</div><div class="pom-preset-detail">15·3·x6</div></div></div></div>
+    <div class="clay" style="margin:0 16px 14px;padding:12px 16px;"><div class="pom-sess-title">Sesiones completadas</div><div class="pom-dots" id="pom-dots"></div></div>
+    <div style="height:16px"></div>
+  </div>

@@ -1,0 +1,12 @@
+  <div class="screen active" id="screen-auth" style="display:none;">
+    <video class="auth-vid" autoplay loop muted playsinline src="vid/base.mp4"></video>
+    <div class="auth-title">Bienvenida a Quokki 🐾</div>
+    <div class="auth-sub" id="auth-sub">Ingresá con tu email para continuar</div>
+    <input class="auth-input" id="auth-email" type="email" placeholder="tu@email.com" autocomplete="email">
+    <input class="auth-input" id="auth-pass" type="password" placeholder="Contraseña" autocomplete="current-password">
+    <button class="auth-btn" onclick="authLogin()">Entrar</button>
+    <button class="auth-btn secondary" onclick="authRegister()">Crear cuenta nueva</button>
+    <button class="auth-btn ghost" onclick="enterDemoMode()">Probar modo demo</button>
+    <div class="auth-msg" id="auth-msg"></div>
+    <span class="auth-link" onclick="authMagicLink()">Entrar sin contraseña (link al mail)</span>
+  </div>

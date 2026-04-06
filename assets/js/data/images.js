@@ -1,0 +1,11 @@
+window.QIMGS={
+  base:'img/base.png',
+  exito:'img/exito.png',
+  falla:'img/falla.png',
+  enojado:'img/enojado.png',
+  sueno:'img/sueno.png',
+  pausa:'img/pausa.png',
+  enfoque:'img/enfoque.png',
+  futbol:'img/futbol.png',
+  pilates:'img/pilates.png'
+};
