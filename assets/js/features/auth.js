@@ -132,6 +132,7 @@ async function checkAuth(){
   var {data:{session}}=await sb.auth.getSession();
   if(!session){
     endActiveSession();
+    if(typeof resetGoogleCalendarContext==='function')resetGoogleCalendarContext();
     try{
       var demoRaw=localStorage.getItem(demoProfileKey());
       if(demoRaw){
@@ -168,6 +169,12 @@ async function checkAuth(){
     if(cloudState.settings&&Array.isArray(cloudState.settings.favoriteSports)&&cloudState.settings.favoriteSports.length)favoriteSports=cloudState.settings.favoriteSports.slice();
     if(typeof applyCloudNotificationPreference==='function'&&cloudState.settings&&typeof cloudState.settings.notificationsEnabled==='boolean'){
       applyCloudNotificationPreference(cloudState.settings.notificationsEnabled);
+    }
+    if(typeof applyCloudGoogleCalendarPreference==='function'&&cloudState.settings&&cloudState.settings.googleCalendar){
+      applyCloudGoogleCalendarPreference(cloudState.settings.googleCalendar);
+    }
+    if(typeof syncGoogleCalendarIfEnabled==='function'){
+      await syncGoogleCalendarIfEnabled(false);
     }
     startActiveSession();
     if(gname)gname.textContent=profileName;
@@ -242,7 +249,7 @@ function selectAppMode(el){
   var objectivesStep=document.getElementById('objectives-step');
   var objectivesWrap=document.getElementById('ob-chips');
   var sportsConfig=document.getElementById('sports-config');
-  if(onboardingSub)onboardingSub.textContent=appMode==='classic'?'Armemos tu version Quokki clasica, con tus deportes y tu estilo':'Contame tus objetivos para personalizar una version mas general';
+  if(onboardingSub)onboardingSub.textContent=appMode==='classic'?'Armemos tu versión Quokki clásica, con tus deportes y tu estilo':'Contame tus objetivos para personalizar una versión más general';
   if(objectivesStep)objectivesStep.style.display=appMode==='adaptive'?'block':'none';
   if(objectivesWrap)objectivesWrap.style.display=appMode==='adaptive'?'flex':'none';
   if(sportsConfig)sportsConfig.style.display=appMode==='classic'?'block':'none';
@@ -493,17 +500,17 @@ function renderDynamicHabits(){
   var featuredName=document.querySelector('#sk-card .sk-name');
   var featuredSub=document.querySelector('#sk-card .sk-sub');
   if(appMode==='classic'){
-    if(featuredLabel)featuredLabel.textContent='Skincare · manana';
-    if(morningLabel)morningLabel.textContent='Vitaminas · manana';
-    if(dayLabel)dayLabel.textContent='Movimiento · tu version';
-    if(wellbeingLabel)wellbeingLabel.textContent='Alimentacion Quokki';
+    if(featuredLabel)featuredLabel.textContent='Skincare · mañana';
+    if(morningLabel)morningLabel.textContent='Vitaminas · mañana';
+    if(dayLabel)dayLabel.textContent='Movimiento · tu versión';
+    if(wellbeingLabel)wellbeingLabel.textContent='Alimentación Quokki';
     if(nightLabel)nightLabel.textContent='Vitaminas · noche';
   } else {
     if(featuredLabel)featuredLabel.textContent='Objetivo estrella';
-    if(morningLabel)morningLabel.textContent='Rutina del dia';
+    if(morningLabel)morningLabel.textContent='Rutina del día';
     if(dayLabel)dayLabel.textContent=(profileObjectives||[]).includes('estres')?'Mente y energia':'Movimiento y enfoque';
     if(wellbeingLabel)wellbeingLabel.textContent='Bienestar diario';
-    if(nightLabel)nightLabel.textContent='Cierre del dia';
+    if(nightLabel)nightLabel.textContent='Cierre del día';
   }
   if(featuredIcon)featuredIcon.textContent=featured.icon;
   if(featuredName)featuredName.textContent=featured.title;
@@ -515,16 +522,16 @@ function renderDynamicHabits(){
   var bonusSub=document.querySelector('#bonus-study .fhs');
   if(appMode==='classic'){
     if(bonusName)bonusName.textContent='Lectura o estudio';
-    if(bonusSub)bonusSub.textContent='Aprendi o lei algo hoy · suma 0.5 pts';
+    if(bonusSub)bonusSub.textContent='Aprendí o leí algo hoy · suma 0.5 pts';
   } else if((profileObjectives||[]).includes('estres')){
-    if(bonusName)bonusName.textContent='Pausa anti estres';
+    if(bonusName)bonusName.textContent='Pausa anti estrés';
     if(bonusSub)bonusSub.textContent='Respirar, bajar cambios o hacer journaling · suma 0.5 pts';
   } else if((profileObjectives||[]).includes('deporte')){
     if(bonusName)bonusName.textContent='Movilidad extra';
-    if(bonusSub)bonusSub.textContent='Un ratito mas para recuperar el cuerpo · suma 0.5 pts';
+    if(bonusSub)bonusSub.textContent='Un ratito más para recuperar el cuerpo · suma 0.5 pts';
   } else {
     if(bonusName)bonusName.textContent='Lectura o estudio';
-    if(bonusSub)bonusSub.textContent='Aprendi o lei algo hoy · suma 0.5 pts';
+    if(bonusSub)bonusSub.textContent='Aprendí o leí algo hoy · suma 0.5 pts';
   }
 }
 
@@ -532,6 +539,7 @@ function renderDynamicHabits(){
 sb.auth.onAuthStateChange(function(event,session){
   if(event==='SIGNED_OUT'){
     endActiveSession();
+    if(typeof resetGoogleCalendarContext==='function')resetGoogleCalendarContext();
     sbUser=null;
     cloudState={settings:{},runtime:{}};
     cloudStateLoaded=false;

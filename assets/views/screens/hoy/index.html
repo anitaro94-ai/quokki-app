@@ -2,23 +2,25 @@
     <div class="header">
       <div class="header-top">
         <div class="tpill"><div class="tdot"></div><span class="ttxt" id="ttxt">--:--</span></div>
-        <button class="settings-btn" type="button" onclick="openConfigEditor()" aria-label="Configuracion">⋯</button>
+        <button class="settings-btn" type="button" onclick="openConfigEditor()" aria-label="Configuración">⋯</button>
       </div>
-      <div class="gsub" id="gsub">Buenos dias</div>
+      <div class="gsub" id="gsub">Buenos días</div>
       <div class="gname" id="gname">Cargando...</div>
       <div class="gdate" id="gdate"></div>
     </div>
-    <div class="pbadge pb-m" id="pbadge">🌅 Rutina de manana</div>
+    <div class="pbadge pb-m" id="pbadge">🌅 Rutina de mañana</div>
     <div class="mba-alert" id="mba-alert"><span style="font-size:18px">✈️</span><span class="mba-txt"></span></div>
     <div style="text-align:center;margin:0 16px 10px;">
       <button id="notif-btn" type="button" onclick="toggleNotifications()" style="background:var(--card);border:none;border-radius:50px;padding:8px 20px;font-size:12px;font-weight:600;color:var(--stone);cursor:pointer;box-shadow:0 3px 0 var(--clay1);position:relative;z-index:4;">🔕 Activar recordatorios</button>
       <div id="notif-status" style="font-size:11px;color:var(--mist);margin-top:8px;min-height:16px;"></div>
+      <button id="gcal-btn" type="button" onclick="toggleGoogleCalendarConnection()" style="margin-top:8px;background:var(--card);border:none;border-radius:50px;padding:8px 20px;font-size:12px;font-weight:600;color:var(--stone);cursor:pointer;box-shadow:0 3px 0 var(--clay1);position:relative;z-index:4;">📆 Vincular Google Calendar</button>
+      <div id="gcal-status" style="font-size:11px;color:var(--mist);margin-top:8px;min-height:16px;"></div>
     </div>
 
     <div class="qbar clay" style="margin:0 16px 14px;">
       <!-- Video saludo (siempre visible en idle/ok) -->
       <video id="qvid" class="qvid" autoplay loop muted playsinline src="vid/base.mp4"></video>
-      <!-- Imagen estatica para estados especiales (enojado, triste, sueno) -->
+      <!-- Imagen estática para estados especiales (enojado, triste, sueño) -->
       <img class="qimg" id="qimg" src="" alt="Quokki" style="display:none;">
       <div>
         <div class="qname">Quokki</div>
@@ -30,14 +32,14 @@
     <div class="qcard-quote qc-m" id="qcard-quote"><div class="qmark">"</div><div class="qtxt" id="qtxt"></div><div class="qsrc" id="qsrc"></div></div>
     <div class="pw"><div class="pt"><span class="pl">Progreso de hoy</span><span class="pp" id="pct">0%</span></div><div class="pbg"><div class="pf" id="pf" style="width:0%"></div></div></div>
 
-    <div class="slabel" id="featured-label">Habito destacado</div>
+    <div class="slabel" id="featured-label">Hábito destacado</div>
     <div class="sk-card clay" id="sk-card" onclick="togSkin()">
       <div class="sk-icon-big">✨</div>
-      <div class="sk-info"><div class="sk-name">Rutina de manana</div><div class="sk-sub">Limpieza · Serum · SPF · suma 0.5 pts</div></div>
+      <div class="sk-info"><div class="sk-name">Rutina de mañana</div><div class="sk-sub">Limpieza · Sérum · SPF · suma 0.5 pts</div></div>
       <div class="sk-ck"></div>
     </div>
 
-    <div class="slabel" id="morning-label">Rutina del dia</div>
+    <div class="slabel" id="morning-label">Rutina del día</div>
     <div class="hgrid">
       <div class="hcard" id="h-vitc" onclick="tog('vitc')"><div class="hiw">🍊</div><div class="hn">Vitamina C</div><div class="hs">Al despertar</div><div class="hck"></div></div>
       <div class="hcard" id="h-nmn" onclick="tog('nmn')"><div class="hiw">⚗️</div><div class="hn">NMN</div><div class="hs">Al despertar</div><div class="hck"></div></div>
@@ -45,7 +47,7 @@
 
     <div class="slabel">Agua</div>
     <div class="wc clay-blue">
-      <div class="wt"><span class="wl">💧 Hidratacion</span><span><span class="wa" id="wamt">0.0</span><span class="wu">/ 3L</span></span></div>
+      <div class="wt"><span class="wl">💧 Hidratación</span><span><span class="wa" id="wamt">0.0</span><span class="wu">/ 3L</span></span></div>
       <div class="wtrack" id="wtrack"></div>
       <div class="wbarbg"><div class="wbar" id="wbar" style="width:0%"></div></div>
       <div class="whint" id="whint">Toca cada gotita = 300ml</div>
@@ -54,7 +56,7 @@
     <div class="slabel" id="day-label" style="margin-top:12px">Movimiento y mente</div>
     <div class="fh" id="h-futbol" onclick="tog('futbol')">
       <div class="fhi" id="h-futbol-icon">🏃</div>
-      <div class="fhinfo"><div class="fhn">Futbol · Puntineras<span class="ptag" id="ftag">Mar & Jue</span></div><div class="fhs" id="fsub">Verificando...</div></div>
+      <div class="fhinfo"><div class="fhn">Fútbol · Puntineras<span class="ptag" id="ftag">Mar & Jue</span></div><div class="fhs" id="fsub">Verificando...</div></div>
       <div class="fhck"></div>
     </div>
     <div class="fh" id="h-pilates" onclick="tog('pilates')">
@@ -63,24 +65,24 @@
       <div class="fhck"></div>
     </div>
 
-    <div class="slabel" id="wellbeing-label" style="margin-top:12px">Alimentacion y bienestar</div>
+    <div class="slabel" id="wellbeing-label" style="margin-top:12px">Alimentación y bienestar</div>
     <div class="fh" id="h-vianda" onclick="tog('vianda')"><div class="fhi">🥗</div><div class="fhinfo"><div class="fhn">Vianda preparada</div><div class="fhs">Desayuno + almuerzo + merienda</div></div><div class="fhck"></div></div>
-    <div class="fh" id="h-singluten" onclick="tog('singluten')"><div class="fhi">🌾</div><div class="fhinfo"><div class="fhn">Sin gluten ni azucar</div><div class="fhs">Alimentos reales · metodo Quokki</div></div><div class="fhck"></div></div>
+    <div class="fh" id="h-singluten" onclick="tog('singluten')"><div class="fhi">🌾</div><div class="fhinfo"><div class="fhn">Sin gluten ni azúcar</div><div class="fhs">Alimentos reales · método Quokki</div></div><div class="fhck"></div></div>
     <div class="fh" id="h-reposo" onclick="tog('reposo')"><div class="fhi">🌙</div><div class="fhinfo"><div class="fhn">Reposo digestivo</div><div class="fhs">12 hs entre cena y desayuno</div></div><div class="fhck"></div></div>
 
     <div class="divider"></div>
-    <div class="slabel" id="night-label">Cierre del dia</div>
+    <div class="slabel" id="night-label">Cierre del día</div>
     <div class="hgrid">
       <div class="hcard" id="h-magnesio" onclick="tog('magnesio')"><div class="hiw">🫧</div><div class="hn">Bisglicinato magnesio</div><div class="hs">Antes de dormir</div><div class="hck"></div></div>
       <div class="hcard" id="h-q10" onclick="tog('q10')"><div class="hiw">⚡</div><div class="hn">Coenzima Q10</div><div class="hs">Noche</div><div class="hck"></div></div>
     </div>
-    <div class="fh" id="h-colageno" onclick="tog('colageno')"><div class="fhi">💧</div><div class="fhinfo"><div class="fhn">Colageno hidrolizado</div><div class="fhs">Con agua tibia · antes de dormir</div></div><div class="fhck"></div></div>
+    <div class="fh" id="h-colageno" onclick="tog('colageno')"><div class="fhi">💧</div><div class="fhinfo"><div class="fhn">Colágeno hidrolizado</div><div class="fhs">Con agua tibia · antes de dormir</div></div><div class="fhck"></div></div>
 
     <div class="divider"></div>
-    <div class="slabel">Bonus del dia</div>
+    <div class="slabel">Bonus del día</div>
     <div class="fh clay" id="bonus-study" onclick="toggleBonus()" style="margin:0 16px 10px;">
       <div class="fhi" style="background:#FFF0DC;box-shadow:0 2px 0 #E8D4A0;font-size:20px;">📚</div>
-      <div class="fhinfo"><div class="fhn">Estudio o lectura</div><div class="fhs">Aprendi o lei algo hoy · suma 0.5 pts</div><div class="bonus-pts">+ 0.5 puntos!</div></div>
+      <div class="fhinfo"><div class="fhn">Estudio o lectura</div><div class="fhs">Aprendí o leí algo hoy · suma 0.5 pts</div><div class="bonus-pts">+ 0.5 puntos!</div></div>
       <div class="fhck"></div>
     </div>
     <div style="height:16px"></div>

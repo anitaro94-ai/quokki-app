@@ -6,24 +6,24 @@ let wd=0,cp='semana',bonusDone=false,skinDone=false;
 let lastSavePromise=Promise.resolve();
 const TOTAL_POSSIBLE=HA.length+1+0.5+0.5; // habitos + agua + bonus + skin(0.5)
 
-const GREETING_LINES=['Buenos dias','Hoy suma','Vamos paso a paso','Con calma tambien vale','Acordate de vos','Hoy movemos','Pequenos pasos, gran progreso'];
-const QT={morning:[{t:'El agua es el primer acto de amor propio del dia.',s:'\u2014 metodo Quokki'},{t:'Hara hachi bu: come al 80%. El resto lo pone la sabiduria.',s:'\u2014 proverbio japones'},{t:'Wabi-sabi: la imperfeccion de hoy tambien cuenta.',s:'\u2014 filosofia japonesa'},{t:'No tenes que ser perfecta. Solo persistente.',s:'\u2014 Proyecto Quokki'}],afternoon:[{t:'La vianda de hoy es la energia de manana.',s:'\u2014 sabiduria de oficina'},{t:'Persistir es mas poderoso que la perfeccion.',s:'\u2014 Proyecto Quokki'},{t:'El cuerpo recuerda cada vaso de agua que le diste.',s:'\u2014 metodo Quokki'}],night:[{t:'El reposo es donde el cuerpo se construye. Cerra bien el dia.',s:'\u2014 bienestar japones'},{t:'El magnesio te abraza por dentro. Buenas noches, Quokki acompana.',s:'\u2014 ciencia wabi-sabi'},{t:'Doce horas de silencio digestivo: el reset mas elegante.',s:'\u2014 metodo Quokki'}]};
-const QS={start:{k:'base',a:'',m:'El dia recien empieza. Toma agua primero!',mo:'Modo siesta tranquila'},low:{k:'falla',a:'shake',m:'Vamos que podemos mas. Quokki cree en vos.',mo:'Un poquito decaido'},mid:{k:'base',a:'',m:'Bien encaminada. Cada habito cuenta.',mo:'Tranquilo y esperanzado'},good:{k:'base',a:'bounce',m:'Mas de la mitad! Quokki esta orgulloso.',mo:'Contento contento'},great:{k:'exito',a:'bounce',m:'Casi todo! Quokki baila de alegria.',mo:'Muy feliz!'},perfect:{k:'exito',a:'bounce',m:'Dia completo! Quokki festeja con vos.',mo:'Modo celebracion'},night_ok:{k:'sueno',a:'',m:'Cerra bien el dia. Descansa bien.',mo:'Modo noche'},night_bad:{k:'enojado',a:'shake',m:'Quedan habitos! Con amor, Quokki reclama.',mo:'Decepcionado pero tierno'}};
-const BKM=[{i:'\uD83C\uDF4A',id:'vitc',l:'Vitamina C'},{i:'\u2697\uFE0F',id:'nmn',l:'NMN'},{i:'\uD83D\uDCA7',id:'agua',l:'Agua (3L)'},{i:'\u26BD',id:'futbol',l:'Futbol'},{i:'\uD83E\uDD57',id:'vianda',l:'Vianda'},{i:'\uD83C\uDF3E',id:'singluten',l:'Sin gluten'},{i:'\uD83C\uDF19',id:'reposo',l:'Reposo'},{i:'\uD83E\uDEA7',id:'magnesio',l:'Magnesio'},{i:'\u26A1',id:'q10',l:'Q10'},{i:'\uD83D\uDCA7',id:'colageno',l:'Colageno'},{i:'\u2728',id:'skincare',l:'Skincare'}];
+const GREETING_LINES=['Buenos días','Hoy suma','Vamos paso a paso','Con calma también vale','Acordate de vos','Hoy movemos','Pequeños pasos, gran progreso'];
+const QT={morning:[{t:'El agua es el primer acto de amor propio del día.',s:'\u2014 método Quokki'},{t:'Hara hachi bu: comé al 80%. El resto lo pone la sabiduría.',s:'\u2014 proverbio japonés'},{t:'Wabi-sabi: la imperfección de hoy también cuenta.',s:'\u2014 filosofía japonesa'},{t:'No tenés que ser perfecta. Solo persistente.',s:'\u2014 Proyecto Quokki'}],afternoon:[{t:'La vianda de hoy es la energía de mañana.',s:'\u2014 sabiduría de oficina'},{t:'Persistir es más poderoso que la perfección.',s:'\u2014 Proyecto Quokki'},{t:'El cuerpo recuerda cada vaso de agua que le diste.',s:'\u2014 método Quokki'}],night:[{t:'El reposo es donde el cuerpo se construye. Cerrá bien el día.',s:'\u2014 bienestar japonés'},{t:'El magnesio te abraza por dentro. Buenas noches, Quokki acompaña.',s:'\u2014 ciencia wabi-sabi'},{t:'Doce horas de silencio digestivo: el reset más elegante.',s:'\u2014 método Quokki'}]};
+const QS={start:{k:'base',a:'',m:'El día recién empieza. Tomá agua primero!',mo:'Modo siesta tranquila'},low:{k:'falla',a:'shake',m:'Vamos que podemos más. Quokki cree en vos.',mo:'Un poquito decaído'},mid:{k:'base',a:'',m:'Bien encaminada. Cada hábito cuenta.',mo:'Tranquilo y esperanzado'},good:{k:'base',a:'bounce',m:'Más de la mitad! Quokki está orgulloso.',mo:'Contento contento'},great:{k:'exito',a:'bounce',m:'Casi todo! Quokki baila de alegría.',mo:'Muy feliz!'},perfect:{k:'exito',a:'bounce',m:'Día completo! Quokki festeja con vos.',mo:'Modo celebración'},night_ok:{k:'sueno',a:'',m:'Cerrá bien el día. Descansá bien.',mo:'Modo noche'},night_bad:{k:'enojado',a:'shake',m:'Quedan hábitos! Con amor, Quokki reclama.',mo:'Decepcionado pero tierno'}};
+const BKM=[{i:'\uD83C\uDF4A',id:'vitc',l:'Vitamina C'},{i:'\u2697\uFE0F',id:'nmn',l:'NMN'},{i:'\uD83D\uDCA7',id:'agua',l:'Agua (3L)'},{i:'\u26BD',id:'futbol',l:'Fútbol'},{i:'\uD83E\uDD57',id:'vianda',l:'Vianda'},{i:'\uD83C\uDF3E',id:'singluten',l:'Sin gluten'},{i:'\uD83C\uDF19',id:'reposo',l:'Reposo'},{i:'\uD83E\uDEA7',id:'magnesio',l:'Magnesio'},{i:'\u26A1',id:'q10',l:'Q10'},{i:'\uD83D\uDCA7',id:'colageno',l:'Colágeno'},{i:'\u2728',id:'skincare',l:'Skincare'}];
 const PRESETS=[{name:'Clasico',focus:25,rest:5,rounds:4},{name:'Intenso',focus:50,rest:10,rounds:3},{name:'Suave',focus:15,rest:3,rounds:6}];
 const HABIT_LIBRARY={
-  rutina_manana:{icon:'🌅',title:'Rutina de manana',subtitle:'Arrancar con calma y enfoque'},
+  rutina_manana:{icon:'🌅',title:'Rutina de mañana',subtitle:'Arrancar con calma y enfoque'},
   desayuno_proteico:{icon:'🍳',title:'Desayuno con proteina',subtitle:'Huevos, yogur o opcion saciante'},
   foco_mental:{icon:'🧠',title:'Enfoque mental',subtitle:'Una tarea importante sin distracciones'},
   movimiento_suave:{icon:'🚶',title:'Mover el cuerpo',subtitle:'Caminar, estirar o activar 20 minutos'},
   entrenamiento:{icon:'🏋️',title:'Entrenamiento',subtitle:'Fuerza, pilates, gym o deporte'},
   comida_real:{icon:'🥗',title:'Comida real',subtitle:'Proteina, fibra y menos ultraprocesados'},
-  vianda_saludable:{icon:'🍱',title:'Vianda saludable',subtitle:'Dejar algo rico y practico preparado'},
+  vianda_saludable:{icon:'🍱',title:'Vianda saludable',subtitle:'Dejar algo rico y práctico preparado'},
   sin_ultraprocesados:{icon:'🌿',title:'Menos ultraprocesados',subtitle:'Elegir opciones simples y reales'},
   skincare:{icon:'✨',title:'Skincare',subtitle:'Limpiar, hidratar y proteger la piel'},
-  colageno:{icon:'💧',title:'Colageno o hidratacion extra',subtitle:'Un plus para piel y bienestar'},
-  respiracion:{icon:'🫁',title:'Respiracion consciente',subtitle:'Pausa corta para bajar cambios'},
-  journaling:{icon:'📝',title:'Registro del dia',subtitle:'Anotar como te sentis o que aprendiste'},
+  colageno:{icon:'💧',title:'Colágeno o hidratación extra',subtitle:'Un plus para piel y bienestar'},
+  respiracion:{icon:'🫁',title:'Respiración consciente',subtitle:'Pausa corta para bajar cambios'},
+  journaling:{icon:'📝',title:'Registro del día',subtitle:'Anotar cómo te sentís o qué aprendiste'},
   rutina_noche:{icon:'🌙',title:'Rutina de noche',subtitle:'Bajar un cambio antes de dormir'},
   dormir_mejor:{icon:'😴',title:'Dormir mejor',subtitle:'Apagar pantallas y priorizar descanso'},
   lectura:{icon:'📚',title:'Lectura o estudio',subtitle:'Un rato para aprender algo nuevo'},
@@ -32,27 +32,27 @@ const HABIT_LIBRARY={
   movilidad:{icon:'🧘',title:'Movilidad',subtitle:'Aflojar el cuerpo y soltar tension'}
 };
 const SPORT_VARIANTS={
-  futbol:{icon:'⚽',title:'Futbol · Puntineras',subtitle:'Mar y Jue + Sab',tag:'HOY',imageSrc:'img/futbol.png'},
+  futbol:{icon:'⚽',title:'Fútbol · Puntineras',subtitle:'Mar y Jue + Sab',tag:'HOY',imageSrc:'img/futbol.png'},
   pilates:{icon:'🧘',title:'Pilates',subtitle:'Fluye Pilates o movilidad suave',imageSrc:'img/pilates.png'},
   gym:{icon:'🏋️',title:'Gym o fuerza',subtitle:'Rutina de entrenamiento personal'},
   caminar:{icon:'🚶',title:'Caminar',subtitle:'Salida suave o paseo activo'},
   running:{icon:'🏃',title:'Running',subtitle:'Trote suave o pasada de energia'},
   tenis:{icon:'🎾',title:'Tenis',subtitle:'Cancha, saque y movimiento agil'},
-  natacion:{icon:'🏊',title:'Natacion',subtitle:'Agua, tecnica y cardio amable'}
+  natacion:{icon:'🏊',title:'Natación',subtitle:'Agua, técnica y cardio amable'}
 };
 const CLASSIC_HABIT_PLAN={
   featured:HABIT_LIBRARY.skincare,
   slots:[
     {icon:'🍊',title:'Vitamina C',subtitle:'Al despertar'},
     {icon:'⚗️',title:'NMN',subtitle:'Al despertar'},
-    {icon:'⚽',title:'Futbol · Puntineras',subtitle:'Mar y Jue + Sab',tag:'HOY',imageSrc:'img/futbol.png'},
+    {icon:'⚽',title:'Fútbol · Puntineras',subtitle:'Mar y Jue + Sab',tag:'HOY',imageSrc:'img/futbol.png'},
     {icon:'🧘',title:'Pilates',subtitle:'Fluye Pilates o movilidad suave',imageSrc:'img/pilates.png'},
     {icon:'🥗',title:'Vianda preparada',subtitle:'Desayuno + almuerzo + merienda'},
-    {icon:'🌾',title:'Sin gluten ni azucar',subtitle:'Alimentos reales · metodo Quokki'},
+    {icon:'🌾',title:'Sin gluten ni azúcar',subtitle:'Alimentos reales · método Quokki'},
     {icon:'🌙',title:'Reposo digestivo',subtitle:'12 hs entre cena y desayuno'},
     {icon:'🫧',title:'Bisglicinato magnesio',subtitle:'Antes de dormir'},
     {icon:'⚡',title:'Coenzima Q10',subtitle:'Noche'},
-    {icon:'💧',title:'Colageno hidrolizado',subtitle:'Con agua tibia · antes de dormir'}
+    {icon:'💧',title:'Colágeno hidrolizado',subtitle:'Con agua tibia · antes de dormir'}
   ]
 };
 const OBJECTIVE_HABITS={
@@ -178,7 +178,7 @@ function initApp(){
   if(body)body.classList.remove('night-mode');
   if(html)html.classList.remove('night-mode');
   var ttxt=document.getElementById('ttxt');if(ttxt)ttxt.textContent=h+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
-  var dias=['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var dias=['Dom','Lun','Mar','Mié','Jue','Vie','Sab'],meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   var gdate=document.getElementById('gdate');if(gdate)gdate.textContent=dias[now.getDay()]+', '+now.getDate()+' de '+meses[now.getMonth()];
   var gname=document.getElementById('gname');if(gname)gname.textContent=nickname;
   var gsub=document.getElementById('gsub');if(gsub)gsub.textContent=GREETING_LINES[Math.floor(Math.random()*GREETING_LINES.length)];
@@ -187,7 +187,7 @@ function initApp(){
   var qsrc=document.getElementById('qsrc');if(qsrc)qsrc.textContent=q.s;
   var pb=document.getElementById('pbadge'),qc=document.getElementById('qcard-quote');
   if(period==='morning'){
-    if(pb){pb.className='pbadge pb-m';pb.textContent=appMode==='classic'?'\uD83C\uDF4A Vitamina C':'\uD83C\uDF05 Rutina de manana';}
+    if(pb){pb.className='pbadge pb-m';pb.textContent=appMode==='classic'?'\uD83C\uDF4A Vitamina C':'\uD83C\uDF05 Rutina de mañana';}
     if(qc)qc.className='qcard-quote qc-m';
   }
   else if(period==='afternoon'){
@@ -208,7 +208,7 @@ function initApp(){
   if(appMode==='classic'){
     if(ci.futbol){if(fs)fs.textContent='Puntineras listas. Hoy hay futbol.';if(ft)ft.textContent='HOY';}
     else if(ci.torneoSab){if(fs)fs.textContent='Sabado de torneo o movimiento con ganas.';if(ft)ft.textContent='ACTIVO';}
-    else{if(fs)fs.textContent='Tu espacio para futbol, gym o el deporte que elijas.';if(ft)ft.textContent='TU RITMO';}
+    else{if(fs)fs.textContent='Tu espacio para fútbol, gym o el deporte que elijas.';if(ft)ft.textContent='TU RITMO';}
     if(ci.pilates){if(ps)ps.textContent='Hoy toca pilates, movilidad o una pausa linda para el cuerpo';}
     else{if(ps)ps.textContent='Pilates suave, movilidad o un rato para volver al eje';}
   } else {
@@ -218,7 +218,7 @@ function initApp(){
     if(ci.pilates){if(ps)ps.textContent='Un rato de foco o movilidad te va a hacer bien';}
     else{if(ps)ps.textContent='Podes usar este espacio para mente, pausa o movimiento';}
   }
-  if(ci.mba){var al=document.getElementById('mba-alert');if(al){al.style.display='flex';al.querySelector('.mba-txt').textContent='\u2708\uFE0F '+ci.mbaName+' \u2014 ajusta habitos al viaje';}}
+  if(ci.mba){var al=document.getElementById('mba-alert');if(al){al.style.display='flex';al.querySelector('.mba-txt').textContent='\u2708\uFE0F '+ci.mbaName+' \u2014 ajusta hábitos al viaje';}}
 
   renderDynamicHabits();
   if(window.QIMGS){
@@ -232,6 +232,7 @@ function initApp(){
   if(typeof applySavedPomodoroState==='function')applySavedPomodoroState();
   else pomInit();
   buildRecetas('Todos');
+  if(typeof renderGoogleCalendarState==='function')renderGoogleCalendarState();
 }
 
 function buildW(){

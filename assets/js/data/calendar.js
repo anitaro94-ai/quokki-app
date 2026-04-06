@@ -1,3 +1,19 @@
 const CAL={pilates:{days:[1,3,5]},futbol:{days:[2,4],torneoStart:new Date(2026,3,11)},mba:[{start:new Date(2026,3,8),end:new Date(2026,3,12),name:'MBA BsAs'},{start:new Date(2026,3,29),end:new Date(2026,4,3),name:'MBA BsAs'}]};
-function calInfo(){var now=new Date(),day=now.getDay(),r={pilates:false,futbol:false,torneoSab:false,mba:false,mbaName:''};if(CAL.pilates.days.includes(day))r.pilates=true;if(CAL.futbol.days.includes(day))r.futbol=true;if(day===6&&now>=CAL.futbol.torneoStart)r.torneoSab=true;CAL.mba.forEach(function(m){if(now>=m.start&&now<=m.end){r.mba=true;r.mbaName=m.name;}});return r;}
-function nextDay(t){var now=new Date(),day=now.getDay(),dn=['Dom','Lun','Mar','Mie','Jue','Vie','Sab'];for(var i=1;i<=7;i++){var n=(day+i)%7;if(t.includes(n))return dn[n];}return '';}
+function calInfo(){
+  var now=new Date(),day=now.getDay(),r={pilates:false,futbol:false,torneoSab:false,mba:false,mbaName:''};
+  if(CAL.pilates.days.includes(day))r.pilates=true;
+  if(CAL.futbol.days.includes(day))r.futbol=true;
+  if(day===6&&now>=CAL.futbol.torneoStart)r.torneoSab=true;
+  CAL.mba.forEach(function(m){if(now>=m.start&&now<=m.end){r.mba=true;r.mbaName=m.name;}});
+  var gctx=window.GCAL_CONTEXT&&window.GCAL_CONTEXT.today?window.GCAL_CONTEXT.today:null;
+  if(gctx){
+    if(gctx.pilates)r.pilates=true;
+    if(gctx.futbol)r.futbol=true;
+    if(gctx.travel){
+      r.mba=true;
+      r.mbaName=gctx.travelLabel||'Viaje';
+    }
+  }
+  return r;
+}
+function nextDay(t){var now=new Date(),day=now.getDay(),dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sab'];for(var i=1;i<=7;i++){var n=(day+i)%7;if(t.includes(n))return dn[n];}return '';}

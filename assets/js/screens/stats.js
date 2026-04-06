@@ -4,7 +4,7 @@ async function buildStats(){
   for(var i=d7.length-1;i>=0;i--){var p=dpct(d7[i].data);if(p!==null&&p>=50)streak++;else break;}
   d30.forEach(function(d){var p=dpct(d.data);if(p!==null&&p>=50){cur++;if(cur>best)best=cur;}else cur=0;});
   var rnum=document.getElementById('rnum');if(rnum)rnum.textContent=streak;
-  var rbest=document.getElementById('rbest');if(rbest)rbest.textContent='Mejor: '+best+' dias';
+  var rbest=document.getElementById('rbest');if(rbest)rbest.textContent='Mejor: '+best+' días';
   var avg=wd7.length?Math.round(wd7.reduce(function(a,d){return a+dpct(d.data);},0)/wd7.length):0;
   var ravg=document.getElementById('ravg');if(ravg)ravg.textContent=avg+'%';
   var ag=wd7.length?(wd7.reduce(function(a,d){return a+((d.data.water||0)*0.3);},0)/wd7.length).toFixed(1):'0';
@@ -30,7 +30,14 @@ function buildBK(days){
   var list=document.getElementById('bklist');if(!list)return;list.innerHTML='';var n=days.filter(function(d){return d.data;}).length||1;
   BKM.forEach(function(bk){
     var cnt=0;
-    days.forEach(function(d){if(!d.data)return;if(bk.id==='agua'){if((d.data.water||0)>=MW)cnt++;}else if(bk.id==='skincare'){if(d.data.skin)cnt++;}else if(d.data.habits&&d.data.habits[bk.id])cnt++;});
+    days.forEach(function(d){
+      if(!d.data)return;
+      if(bk.id==='agua'){
+        cnt+=Math.min((d.data.water||0)/MW,1);
+      }else if(bk.id==='skincare'){
+        if(d.data.skin)cnt++;
+      }else if(d.data.habits&&d.data.habits[bk.id])cnt++;
+    });
     var p=Math.round((cnt/n)*100);
     var label=bk.l;
     if(bk.id==='skincare'){

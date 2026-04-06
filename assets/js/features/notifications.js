@@ -1,5 +1,5 @@
 var NOTIF_TIMES=[
-  {id:'manana', hora:8,  min:0,  msg:'☀️ Buenos dias! Mira tus habitos y empeza con agua.'},
+  {id:'manana', hora:8,  min:0,  msg:'☀️ Buenos días! Mirá tus hábitos y empezá con agua.'},
   {id:'mediodia',hora:13,min:0,  msg:'🥗 Hora del almuerzo. ¿Ya registraste tus hábitos?'},
   {id:'tarde',  hora:17, min:30, msg:'💧 ¿Llegaste a los 3 litros de agua hoy?'},
   {id:'noche',  hora:21, min:0,  msg:'🌙 Cerrá bien el día. Tildá lo que hiciste en Quokki!'}
@@ -60,7 +60,7 @@ function toggleNotifications(){
   if(!('Notification' in window)){
     setNotificationsEnabled(true,true);
     mostrarBotonNotif(true);
-    setNotifStatus('En este navegador no se pueden pedir permisos de notificacion.',true);
+    setNotifStatus('En este navegador no se pueden pedir permisos de notificación.',true);
     return;
   }
   if(Notification.permission==='granted'){

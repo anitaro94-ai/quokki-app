@@ -13,6 +13,7 @@ const SCRIPT_ORDER=[
   'assets/js/data/recipes.js',
   'assets/js/data/calendar.js',
   'assets/js/features/auth.js',
+  'assets/js/features/googleCalendar.js',
   'assets/js/features/tracker.js',
   'assets/js/screens/recetas.js',
   'assets/js/screens/stats.js',
