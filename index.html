@@ -804,7 +804,9 @@ function showScreen(name){
 
 function navigateToScreen(name){
   showScreen(name);
-  if(name==='stats')buildStats().catch(function(){});
+  if(name==='stats'){
+    Promise.resolve(lastSavePromise).finally(function(){buildStats().catch(function(){});});
+  }
   if(name==='pomodoro'){pomRender();}
   if(name==='vianda'){var vqi=document.getElementById('v-qimg');if(vqi&&window.QIMGS)vqi.src=window.QIMGS.base;}
 }
@@ -997,6 +999,7 @@ const HA=['vitc','nmn','futbol','pilates','vianda','singluten','reposo','magnesi
 const VA=['ropa_dep','comida_prep','desayuno','almuerzo','merienda','agua_bot'];
 const MW=10;
 let wd=0,cp='semana',bonusDone=false,skinDone=false;
+let lastSavePromise=Promise.resolve();
 const TOTAL_POSSIBLE=HA.length+1+0.5+0.5; // habitos + agua + bonus + skin(0.5)
 
 const GREETING_LINES=['Buenos dias','Hoy suma','Vamos paso a paso','Con calma tambien vale','Acordate de vos','Hoy movemos','Pequenos pasos, gran progreso'];
@@ -1063,7 +1066,8 @@ var currentHabitPlan={featured:HABIT_LIBRARY.skincare,slots:[]};
 let pom={preset:0,phase:'idle',timeLeft:25*60,totalTime:25*60,running:false,round:0,totalRounds:4,timer:null};
 
 function gp(h){return h>=6&&h<13?'morning':h>=13&&h<20?'afternoon':'night';}
-function dk(){var d=new Date();return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();}
+function dayKeyFromDate(d){return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();}
+function dk(){return dayKeyFromDate(new Date());}
 
 function saveD(){
   var s={water:wd,habits:{},vianda:{},bonus:bonusDone,skin:skinDone};
@@ -1073,8 +1077,11 @@ function saveD(){
   try{localStorage.setItem(currentStorageKey(),JSON.stringify(s));}catch(e){}
   // Guardar en Supabase si hay usuario
   if(sbUser&&!demoMode){
-    sb.from('habitos_diarios').upsert({user_id:sbUser.id,fecha:dk(),data:s},{onConflict:'user_id,fecha'}).then(function(){});
+    lastSavePromise=sb.from('habitos_diarios').upsert({user_id:sbUser.id,fecha:dk(),data:s},{onConflict:'user_id,fecha'}).then(function(){},function(){});
+  }else{
+    lastSavePromise=Promise.resolve();
   }
+  if(document.getElementById('screen-stats')&&document.getElementById('screen-stats').classList.contains('active'))buildStats().catch(function(){});
 }
 async function loadD(){
   var s=null;
@@ -1101,10 +1108,21 @@ async function hist(n){
   var days=[];
   if(sbUser&&!demoMode){
     var fechas=[];
-    for(var i=n-1;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);fechas.push(d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate());}
+    for(var i=n-1;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);fechas.push(dayKeyFromDate(d));}
     var {data}=await sb.from('habitos_diarios').select('fecha,data').eq('user_id',sbUser.id).in('fecha',fechas);
     var map={};if(data)data.forEach(function(r){map[r.fecha]=r.data;});
-    for(var i=n-1;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var f=d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();days.push({date:d,data:map[f]||null});}
+    for(var i=n-1;i>=0;i--){
+      var d=new Date();d.setDate(d.getDate()-i);
+      var f=dayKeyFromDate(d);
+      var localData=null;
+      try{
+        var key=storageKeyFromDate(d);
+        var legacyKey=legacyStorageKeyFromDate(d);
+        var r=localStorage.getItem(key)||localStorage.getItem(legacyKey);
+        if(r)localData=JSON.parse(r);
+      }catch(e){}
+      days.push({date:d,data:map[f]||localData||null});
+    }
     return days;
   }
   // Fallback localStorage
