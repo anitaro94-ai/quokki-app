@@ -1,6 +1,6 @@
 // ── SUPABASE ─────────────────────────────────────────────────
 const SB_URL='https://jsubttrqvgulhbmkxfmj.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzdWJ0dHJxdmd1bGhibWt4Zm1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MTc5MDQsImV4cCI6MjA5MDk5MzkwNH0.w_ZrPWixUGbLjI1qwdNhpD6e-vt8VV-LtsQCeux4QgU';
+const SB_KEY='sb_publishable_whnZjKi6o2MLt_bKEr0uvA_Fk0VCmlX';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const STORAGE_KEY_PREFIX='quokki_day_';
 const LEGACY_STORAGE_KEY_PREFIX='sirena_day_';
