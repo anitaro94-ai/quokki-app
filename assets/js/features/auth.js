@@ -167,8 +167,26 @@ async function checkAuth(){
   }
   demoMode=false;
   sbUser=session.user;
+  await loadCloudState();
   // Ver si tiene perfil
   var {data:prof}=await sb.from('profiles').select('nombre,objetivos').eq('id',sbUser.id).single();
+  if((!prof||!prof.nombre)&&cloudState.settings&&cloudState.settings.profileName){
+    profileName=cloudState.settings.profileName;
+    profileObjectives=Array.isArray(cloudState.settings.profileObjectives)?cloudState.settings.profileObjectives:[];
+    loadUserConfig();
+    if(cloudState.settings&&cloudState.settings.mode)appMode=cloudState.settings.mode;
+    if(cloudState.settings&&Array.isArray(cloudState.settings.objectives)&&cloudState.settings.objectives.length)profileObjectives=cloudState.settings.objectives.slice();
+    if(cloudState.settings&&Array.isArray(cloudState.settings.favoriteSports)&&cloudState.settings.favoriteSports.length)favoriteSports=cloudState.settings.favoriteSports.slice();
+    if(typeof applyCloudNotificationPreference==='function'&&cloudState.settings&&typeof cloudState.settings.notificationsEnabled==='boolean'){
+      applyCloudNotificationPreference(cloudState.settings.notificationsEnabled);
+    }
+    startActiveSession();
+    var gnameSaved=document.getElementById('gname');
+    if(gnameSaved)gnameSaved.textContent=profileName;
+    showScreen('hoy');
+    initApp();
+    return;
+  }
   if(!prof||!prof.nombre){
     showScreen('onboarding');
   }
@@ -177,7 +195,6 @@ async function checkAuth(){
     var gname=document.getElementById('gname');
     profileName=prof.nombre;
     profileObjectives=Array.isArray(prof.objetivos)?prof.objetivos:[];
-    await loadCloudState();
     loadUserConfig();
     if(cloudState.settings&&cloudState.settings.mode)appMode=cloudState.settings.mode;
     if(cloudState.settings&&Array.isArray(cloudState.settings.objectives)&&cloudState.settings.objectives.length)profileObjectives=cloudState.settings.objectives.slice();
@@ -314,9 +331,10 @@ async function obGuardar(){
   if(!favoriteSports.length)favoriteSports=['futbol','pilates'];
   if(appMode!=='adaptive')objetivos=[];
   msg.textContent='Guardando...';msg.className='auth-msg';
+  var profilePersisted=true;
   if(!demoMode){
     var {error}=await sb.from('profiles').upsert({id:sbUser.id,nombre,objetivos});
-    if(error){msg.textContent=error.message;msg.className='auth-msg auth-err';return;}
+    if(error){profilePersisted=false;}
   } else {
     try{
       localStorage.setItem(demoProfileKey(),JSON.stringify({nombre:nombre,objetivos:objetivos,mode:appMode,favoriteSports:favoriteSports}));
@@ -325,8 +343,13 @@ async function obGuardar(){
   profileName=nombre;
   profileObjectives=objetivos;
   saveUserConfig();
+  saveCloudSettings({profileName:nombre,profileObjectives:objetivos});
   editingConfig=false;
   var gname=document.getElementById('gname');if(gname)gname.textContent=profileName;
+  if(!profilePersisted&&msg){
+    msg.textContent='Guardado local OK. Falta permiso en tabla profiles, pero ya podés usar la app.';
+    msg.className='auth-msg';
+  }
   showScreen('hoy');initApp();
 }
 
