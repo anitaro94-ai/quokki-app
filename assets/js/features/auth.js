@@ -7,6 +7,7 @@ const LEGACY_STORAGE_KEY_PREFIX='sirena_day_';
 const USER_STATE_TABLE='app_user_state';
 const ACTIVE_SESSION_TABLE='app_active_sessions';
 const USER_STATE_LOCAL_PREFIX='quokki_user_state_';
+const AUTH_INTENT_KEY='quokki_auth_intent_at';
 var sbUser=null;
 var profileName='';
 var profileObjectives=[];
@@ -20,6 +21,22 @@ var cloudStateRemoteAvailable=true;
 var activeSessionId=null;
 var activeSessionHeartbeat=null;
 var activeSessionRemoteAvailable=true;
+
+function markAuthIntent(){
+  try{localStorage.setItem(AUTH_INTENT_KEY,String(Date.now()));}catch(e){}
+}
+
+function consumeAuthIntent(maxAgeMs){
+  var ttl=typeof maxAgeMs==='number'?maxAgeMs:10*60*1000;
+  try{
+    var raw=localStorage.getItem(AUTH_INTENT_KEY);
+    localStorage.removeItem(AUTH_INTENT_KEY);
+    if(!raw)return false;
+    var ts=parseInt(raw,10);
+    if(!Number.isFinite(ts))return false;
+    return (Date.now()-ts)<=ttl;
+  }catch(e){return false;}
+}
 
 function isObject(value){return value&&typeof value==='object'&&!Array.isArray(value);}
 function mergeObjects(base,patch){
@@ -130,6 +147,20 @@ function endActiveSession(){
 // Mostrar pantalla correcta según auth
 async function checkAuth(){
   var {data:{session}}=await sb.auth.getSession();
+  if(session){
+    var {data:userData,error:userError}=await sb.auth.getUser();
+    if(userError||!userData||!userData.user){
+      try{await sb.auth.signOut();}catch(e){}
+      endActiveSession();
+      if(typeof resetGoogleCalendarContext==='function')resetGoogleCalendarContext();
+      sbUser=null;
+      cloudState={settings:{},runtime:{}};
+      cloudStateLoaded=false;
+      showScreen('auth');
+      return;
+    }
+    session.user=userData.user;
+  }
   if(!session){
     endActiveSession();
     if(typeof resetGoogleCalendarContext==='function')resetGoogleCalendarContext();
@@ -156,7 +187,19 @@ async function checkAuth(){
   sbUser=session.user;
   // Ver si tiene perfil
   var {data:prof}=await sb.from('profiles').select('nombre,objetivos').eq('id',sbUser.id).single();
-  if(!prof||!prof.nombre){showScreen('onboarding');}
+  if(!prof||!prof.nombre){
+    if(!consumeAuthIntent()){
+      try{await sb.auth.signOut();}catch(e){}
+      endActiveSession();
+      if(typeof resetGoogleCalendarContext==='function')resetGoogleCalendarContext();
+      sbUser=null;
+      cloudState={settings:{},runtime:{}};
+      cloudStateLoaded=false;
+      showScreen('auth');
+      return;
+    }
+    showScreen('onboarding');
+  }
   else{
     // Usar nombre real en la app
     var gname=document.getElementById('gname');
@@ -185,6 +228,7 @@ async function checkAuth(){
 
 // Auth: login con email+pass
 async function authLogin(){
+  markAuthIntent();
   var email=document.getElementById('auth-email').value.trim();
   var pass=document.getElementById('auth-pass').value;
   var msg=document.getElementById('auth-msg');
@@ -197,6 +241,7 @@ async function authLogin(){
 
 // Auth: crear cuenta
 async function authRegister(){
+  markAuthIntent();
   var email=document.getElementById('auth-email').value.trim();
   var pass=document.getElementById('auth-pass').value;
   var msg=document.getElementById('auth-msg');
@@ -215,6 +260,7 @@ async function authRegister(){
 
 // Auth: magic link (sin contraseña)
 async function authMagicLink(){
+  markAuthIntent();
   var email=document.getElementById('auth-email').value.trim();
   var msg=document.getElementById('auth-msg');
   if(!email){msg.textContent='Primero ingresá tu email';msg.className='auth-msg auth-err';return;}
@@ -226,6 +272,7 @@ async function authMagicLink(){
 
 // Auth: Google OAuth (incluye scope de Calendar)
 async function authGoogle(){
+  markAuthIntent();
   var msg=document.getElementById('auth-msg');
   if(msg){msg.textContent='Redirigiendo a Google...';msg.className='auth-msg';}
   var redirectTo=window.location.origin+window.location.pathname;
