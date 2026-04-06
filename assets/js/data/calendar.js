@@ -5,15 +5,6 @@ function calInfo(){
   if(CAL.futbol.days.includes(day))r.futbol=true;
   if(day===6&&now>=CAL.futbol.torneoStart)r.torneoSab=true;
   CAL.mba.forEach(function(m){if(now>=m.start&&now<=m.end){r.mba=true;r.mbaName=m.name;}});
-  var gctx=window.GCAL_CONTEXT&&window.GCAL_CONTEXT.today?window.GCAL_CONTEXT.today:null;
-  if(gctx){
-    if(gctx.pilates)r.pilates=true;
-    if(gctx.futbol)r.futbol=true;
-    if(gctx.travel){
-      r.mba=true;
-      r.mbaName=gctx.travelLabel||'Viaje';
-    }
-  }
   return r;
 }
 function nextDay(t){var now=new Date(),day=now.getDay(),dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sab'];for(var i=1;i<=7;i++){var n=(day+i)%7;if(t.includes(n))return dn[n];}return '';}

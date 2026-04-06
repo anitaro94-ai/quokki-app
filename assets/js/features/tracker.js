@@ -232,7 +232,6 @@ function initApp(){
   if(typeof applySavedPomodoroState==='function')applySavedPomodoroState();
   else pomInit();
   buildRecetas('Todos');
-  if(typeof renderGoogleCalendarState==='function')renderGoogleCalendarState();
 }
 
 function buildW(){
