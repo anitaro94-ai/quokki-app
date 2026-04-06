@@ -224,6 +224,22 @@ async function authMagicLink(){
   msg.textContent='✅ Revisá tu email — te enviamos un link para entrar!';
 }
 
+// Auth: Google OAuth (incluye scope de Calendar)
+async function authGoogle(){
+  var msg=document.getElementById('auth-msg');
+  if(msg){msg.textContent='Redirigiendo a Google...';msg.className='auth-msg';}
+  var redirectTo=window.location.origin+window.location.pathname;
+  var {error}=await sb.auth.signInWithOAuth({
+    provider:'google',
+    options:{
+      redirectTo:redirectTo,
+      scopes:'openid email profile https://www.googleapis.com/auth/calendar.readonly',
+      queryParams:{access_type:'offline',prompt:'consent'}
+    }
+  });
+  if(error&&msg){msg.textContent=error.message;msg.className='auth-msg auth-err';}
+}
+
 // Onboarding: selección de chips
 function toggleChip(el){el.classList.toggle('sel');}
 function toggleSportChip(el){el.classList.toggle('sel');}
